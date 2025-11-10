@@ -97,7 +97,12 @@ public final class Transformers {
      * @return A list containing only the elements that passed the test
      */
     public static <I> List<I> select(final Iterable<I> base, final Function<I, Boolean> test) {
-        return null;
+        return flattenTransform(base, new Function<I,Collection<? extends I>>() {
+            @Override
+            public Collection<? extends I> call (final I input){
+                return test.call(input) ? List.of(input) : List.of();
+            }
+        });
     }
 
     /**
@@ -113,6 +118,11 @@ public final class Transformers {
      * @return A list containing only the elements that passed the test
      */
     public static <I> List<I> reject(final Iterable<I> base, final Function<I, Boolean> test) {
-        return null;
+        return select(base, new Function<I,Boolean>() {
+            @Override
+            public Boolean call (final I input){
+                return !test.call(input);
+            }
+        });
     }
 }
